@@ -1,6 +1,0 @@
--cp example
--D use_rtti_doc
--D postxml_example
---macro src.PostXML.use("out/out.xml")
-example.A
--js out/out.js

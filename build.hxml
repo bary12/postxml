@@ -1,4 +1,0 @@
-# Not actually used to build, only for VSHaxe.
---cwd src
-PostXML
--neko run.n
