@@ -4,6 +4,6 @@
         "BaryLevi"
     ],
     "name": "postxml",
-    "releasenote": "Fix problems and add support for ",
-    "version": "1.1.0"
+    "releasenote": "Add README.md",
+    "version": "1.1.1"
 }
