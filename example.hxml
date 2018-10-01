@@ -1,15 +1,6 @@
 -cp example
--D doc-gen
-
-# Needed to perserve docstrings
 -D use_rtti_doc
--js out/run.js
-example.pack.Athing
-
---each
-
--xml out/haxe-compiler-xml.xml
-
---next
-
---macro PostXML.use("out/postxml.xml")
+-D postxml_example
+--macro src.PostXML.use("out/out.xml")
+example.A
+-js out/out.js

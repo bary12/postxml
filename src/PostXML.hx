@@ -1,3 +1,7 @@
+#if postxml_example
+package src;
+#end
+
 #if macro
 import Xml;
 import sys.io.File;
@@ -6,6 +10,34 @@ import haxe.macro.Type;
 import haxe.macro.Context;
 
 using haxe.macro.ExprTools;
+using PostXML.Utils;
+
+class Utils {
+	static public function getFinalName(cls: ClassType) : String {
+		var native = cls.meta.extract(':native');
+		if (native.length > 0) {
+			var expr = native[0].params[0].expr;
+			switch (expr) {
+				case EConst(CString(s)):
+					return s;
+				default: throw 'Expected one string param in @:native meta in class ${cls.module}';
+			}
+		}
+		return cls.pack.concat([cls.name]).join('.');
+	}
+	static public function getFinalFieldName(field: ClassField) : String {
+		var native = field.meta.extract(':native');
+		if (native.length > 0) {
+			var expr = native[0].params[0].expr;
+			switch (expr) {
+				case EConst(CString(s)):
+					return s;
+				default: throw 'Expected one string param in @:native meta in field ${field.name}';
+			}
+		}
+		return field.name;
+	}
+}
 #end
 
 typedef Attributes = Map<String, Null<String>>
@@ -14,7 +46,7 @@ class PostXML {
 	#if macro
 	public static function use(outPath:String) {
 		Context.onAfterTyping(function(modules) {
-			File.saveContent(outPath, generateXml(modules).toString());
+			File.write(outPath, false).writeString(generateXml(modules).toString());
 		});
 	}
 
@@ -36,12 +68,12 @@ class PostXML {
 			switch (module) {
 				case TClassDecl(cls):
 					var kls = cls.get();
-					if (!kls.meta.has(':xml'))
+					if (!kls.meta.has(':postxml'))
 						return null;
                     
 					var meta = kls.meta.get();
 					var xml = createXML('class', [
-						"path" => kls.module,
+						"path" => kls.getFinalName(),
 						"file" => "",
 						"params" => kls.params.map(function(param) return param.name).join(':')
 					], kls.fields.get().map(function(field):Xml {
@@ -67,7 +99,7 @@ class PostXML {
 	}
 
 	public static function fieldXml(field:ClassField, isStatic:Bool):Xml {
-		var xml = createXML(field.name, [
+		var xml = createXML(field.getFinalFieldName(), [
             "public" => "1",
             "set" => (field.kind.match(FMethod(_)) ? 'method' : null),
             "static" => (isStatic ? "1" : null)

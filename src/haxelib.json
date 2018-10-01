@@ -1,3 +1,9 @@
 {
-    "license": "MIT"
+    "license": "MIT",
+    "contributors": [
+        "BaryLevi"
+    ],
+    "name": "postxml",
+    "releasenote": "First prototype",
+    "version": "1.0.0"
 }
