@@ -1,6 +1,6 @@
 # PostXML
 
-A macro that generates dox-compatible documentation XML. Unlike the compiler built-in `-xml` option, this macro generates the XML files with type information **after** build macro transformations have taken place, as well as replacing the names of fields with their `@:native`. This allows you to generate documentation with
+A macro that generates dox-compatible documentation XML. Unlike the compiler built-in `-xml` option, this macro generates the XML files with type information **after** build macro transformations have taken place, as well as replacing the names of fields with their `@:native`. This allows you to generate documentation for a library that's used natively after compilation.
 
 # Usage
 
