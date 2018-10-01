@@ -1,7 +1,3 @@
-#if postxml_example
-package src;
-#end
-
 #if macro
 import Xml;
 import sys.io.File;
