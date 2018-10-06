@@ -9,7 +9,7 @@ using haxe.macro.ExprTools;
 using PostXML.Utils;
 
 class Utils {
-    static public function getFinalName(cls: ClassType) : String {
+    static public function getClassPath(cls: ClassType) : String {
         var native = cls.meta.extract(':native');
         if (native.length > 0) {
             var expr = native[0].params[0].expr;
@@ -21,7 +21,7 @@ class Utils {
         }
         return cls.pack.concat([cls.name]).join('.');
     }
-    static public function getFinalFieldName(field: ClassField) : String {
+    static public function getFinalName(field: ClassField) : String {
         var native = field.meta.extract(':native');
         if (native.length > 0) {
             var expr = native[0].params[0].expr;
@@ -36,7 +36,7 @@ class Utils {
 }
 #end
 
-typedef Attributes = Map<String, Null<String>>
+typedef Attributes = Map<String, Null<String>>;
 
 class PostXML {
     #if macro
@@ -65,12 +65,11 @@ class PostXML {
                 case TClassDecl(cls):
                     var kls = cls.get();
                     if (!kls.meta.has(':postxml'))
-                        return null;
-                    
+                        return null;                    
                     var meta = kls.meta.get();
                     var xml = createXML('class', [
-                        "path" => kls.getFinalName(),
-                        "file" => "",
+                        "path" => kls.getClassPath(),
+                        "file" => ~/\./.replace(kls.module, '/') + '.hx',
                         "params" => kls.params.map(function(param) return param.name).join(':')
                     ], kls.fields.get().map(function(field):Xml {
                             return fieldXml(field, false);
@@ -87,6 +86,8 @@ class PostXML {
                                 return createXML("e", null, [Xml.createPCData(param.toString())]);
                             }));
                         })));
+                    if (kls.superClass != null)
+                        xml.addChild(createXML('extends', ["path" => kls.superClass.t.get().getClassPath()]));
                     return xml;
                 default:
                     return null;
@@ -95,7 +96,7 @@ class PostXML {
     }
 
     public static function fieldXml(field:ClassField, isStatic:Bool):Xml {
-        var xml = createXML(field.getFinalFieldName(), [
+        var xml = createXML(field.getFinalName(), [
             "public" => "1",
             "set" => (field.kind.match(FMethod(_)) ? 'method' : null),
             "static" => (isStatic ? "1" : null)
@@ -112,13 +113,29 @@ class PostXML {
                 createXML('c', ["path" => fieldTypeClass.get().module]);
             case TAbstract(fieldTypeAbstract, _):
                 createXML('x', ["path" => fieldTypeAbstract.get().name]);
+            case TEnum(fieldEnum, params):
+                createXML('e', ["path" => fieldEnum.get().name]);
             case TType(fieldTypeTypedef, _):
                 createXML('t', [
                     "path" => fieldTypeTypedef.get().pack.concat([fieldTypeTypedef.get().name]).join('.')
                 ]);
             case TFun(args, ret):
-                createXML('f', ["a" => args.map(function(arg) return arg.name).join(':')], args.map(function(arg) return typeXml(arg.t)).concat([typeXml
-                    (ret)]));
+                createXML(
+                    'f',
+                    [
+                        "a" => args
+                            .map(function(arg) return arg.name)
+                            .join(':')
+                    ],
+                    args
+                        .map(function(arg) return typeXml(arg.t))
+                        .concat([typeXml(ret)]));
+            case TDynamic(_) | TAnonymous(_):
+                createXML('x', ["path" => "Dynamic"]);
+            case TMono(monoType):
+                typeXml(monoType.get());
+            case null:
+                createXML('unknown');
             default:
                 throw 'unssuported ${type.getName()}';
                 null;
