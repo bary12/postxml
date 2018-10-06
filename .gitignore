@@ -1,2 +1,4 @@
 out/
 pages/
+example/out.js
+example/*.xml

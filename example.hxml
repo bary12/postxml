@@ -1,0 +1,8 @@
+-cp example
+-main example.Main
+--macro PostXML.use('example/postxml.xml')
+-js example/out.js
+-xml example/haxe-compiler-xml.xml
+example
+-D doc-gen
+-D use-rtti-doc
