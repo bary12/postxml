@@ -8,9 +8,9 @@ Add the following lines to your hxml file:
 
 ```
 --macro PostXML.use('path/to/out.xml')
--D use_rtti_doc
+-D use-rtti-doc
 ```
 
 and add @:postxml to every class you want included in the XML file. To add all classes, use `--macro addGlobalMetadata('my.package', ':postxml')`
 
-`-D use_rtti_doc` is a compilation flag that tells the Haxe compiler to preverse documentation after the typing phase of the compilation. If you don't care about documentation and only need class/field information, you can omit this (In Haxe 4, this flag is on by default. See [HaxeFoundation/haxe#7493](https://github.com/HaxeFoundation/haxe/issues/7493))
+`-D use-rtti-doc` is a compilation flag that tells the Haxe compiler to preverse documentation after the typing phase of the compilation. If you don't care about documentation and only need class/field information, you can omit this (In Haxe 4, this flag is on by default. See [HaxeFoundation/haxe#7493](https://github.com/HaxeFoundation/haxe/issues/7493))
