@@ -99,7 +99,7 @@ class PostXML {
 
     public static function fieldXml(field:ClassField, isStatic:Bool):Xml {
         var xml = createXML(field.getFinalName(), [
-            "public" => "1",
+            "public" => (field.isPublic ? "1" : null),
             "set" => (field.kind.match(FMethod(_)) ? 'method' : null),
             "static" => (isStatic ? "1" : null)
         ], [

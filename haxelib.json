@@ -4,6 +4,6 @@
         "BaryLevi"
     ],
     "name": "postxml",
-    "releasenote": "Remove unnecessary files",
-    "version": "1.1.5"
+    "releasenote": "Fix field scoping",
+    "version": "1.1.6"
 }
