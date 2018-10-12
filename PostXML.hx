@@ -83,11 +83,7 @@ class PostXML {
                     if (kls.doc != null)
                         xml.addChild(createXML('haxe_doc', null, [Xml.createPCData(kls.doc)]));
                     if (meta.length > 0)
-                        xml.addChild(createXML('meta', null, meta.map(function(metaEntry):Xml {
-                            return createXML('m', ["n" => metaEntry.name], metaEntry.params.map(function(param:Expr):Xml {
-                                return createXML("e", null, [Xml.createPCData(param.toString())]);
-                            }));
-                        })));
+                        xml.addChild(metaXml(meta));
                     if (kls.superClass != null)
                         xml.addChild(createXML('extends', ["path" => kls.superClass.t.get().getClassPath()]));
                     return xml;
@@ -103,16 +99,26 @@ class PostXML {
             "set" => (field.kind.match(FMethod(_)) ? 'method' : null),
             "static" => (isStatic ? "1" : null)
         ], [
-            typeXml(field.type),
-            field.doc != null ? createXML('haxe_doc', null, [Xml.createPCData(field.doc)]) : null
+            typeXml(field.type)
         ]);
+        if (field.doc != null)
+            xml.addChild(createXML('haxe_doc', null, [Xml.createPCData(field.doc)]));
+        if (field.meta != null)
+            xml.addChild(metaXml(field.meta.get()));
         return xml;
     }
 
+    public static function metaXml(meta: Metadata): Xml {
+        return createXML('meta', null, meta.map(function(metaEntry):Xml {
+            return createXML('m', ["n" => metaEntry.name], metaEntry.params.map(function(param:Expr):Xml {
+                return createXML("e", null, [Xml.createPCData(param.toString())]);
+            }));
+        }));
+    }
     public static function typeXml(type:Type):Xml {
         return switch (type) {
-            case TInst(fieldTypeClass, _):
-                createXML('c', ["path" => fieldTypeClass.get().module]);
+            case TInst(fieldTypeClass, params):
+                createXML('c', ["path" => fieldTypeClass.get().module], params.map(typeXml));
             case TAbstract(fieldTypeAbstract, _):
                 createXML('x', ["path" => fieldTypeAbstract.get().name]);
             case TEnum(fieldEnum, params):

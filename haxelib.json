@@ -4,6 +4,6 @@
         "BaryLevi"
     ],
     "name": "postxml",
-    "releasenote": "Fix field scoping",
-    "version": "1.1.6"
+    "releasenote": "Add support for field metadata and generics",
+    "version": "1.1.7"
 }
