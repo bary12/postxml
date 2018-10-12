@@ -42,7 +42,9 @@ class PostXML {
     #if macro
     public static function use(outPath:String) {
         Context.onAfterTyping(function(modules) {
-            File.write(outPath, false).writeString(generateXml(modules).toString());
+            var file = File.write(outPath, false);
+            file.writeString(generateXml(modules).toString());
+            file.close();
         });
     }
 
