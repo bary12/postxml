@@ -119,10 +119,14 @@ class PostXML {
         return switch (type) {
             case TInst(fieldTypeClass, params):
                 createXML('c', ["path" => fieldTypeClass.get().module], params.map(typeXml));
-            case TAbstract(fieldTypeAbstract, _):
-                createXML('x', ["path" => fieldTypeAbstract.get().name]);
+            case TAbstract(fieldTypeAbstract, params):
+                var typ = fieldTypeAbstract.get();
+                createXML('x', [
+                    "path" => typ.pack.concat([typ.name]).join('.')
+                ], params.map(typeXml));
             case TEnum(fieldEnum, params):
-                createXML('e', ["path" => fieldEnum.get().name]);
+                var enm = fieldEnum.get();
+                createXML('e', ["path" => enm.pack.concat([enm.name]).join('.')]);
             case TType(fieldTypeTypedef, _):
                 createXML('t', [
                     "path" => fieldTypeTypedef.get().pack.concat([fieldTypeTypedef.get().name]).join('.')

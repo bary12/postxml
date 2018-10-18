@@ -1,5 +1,7 @@
 package example;
 
+import haxe.ds.Vector;
+
 @:postxml
 class Main {
     public static function main() {
@@ -15,7 +17,7 @@ class A {
     public static function main() {
         trace('Hello World!');
     }
-    public var baxe: Array<Int>;
+    public var baxe: Vector<Int>;
 }
 
 @:postxml
