@@ -93,8 +93,12 @@ class PostXML {
         }));
     }
 
-    public static function fieldXml(field:ClassField, isStatic:Bool):Xml {
-        var xml = createXML(field.getFinalName(), [
+    public static function fieldXml(field:ClassField, isStatic:Bool): Null<Xml> {
+        var name = field.getFinalName();
+        if (~/^operator\s*[^A-Za-z]/.match(name)) { // C++/C# operator overloading. their names can't be in an XML tag name
+            return null;
+        }
+        var xml = createXML(name, [
             "public" => (field.isPublic ? "1" : null),
             "set" => (field.kind.match(FMethod(_)) ? 'method' : null),
             "static" => (isStatic ? "1" : null)

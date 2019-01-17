@@ -18,6 +18,11 @@ class A {
         trace('Hello World!');
     }
     public var baxe: Vector<Int>;
+    
+    @:native("operator==")
+    public static function compare(a: A, b: A): Bool {
+        return true;
+    };
 }
 
 @:postxml
